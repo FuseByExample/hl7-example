@@ -33,7 +33,7 @@
 
   <camelContext xmlns="http://camel.apache.org/schema/spring">
     <route id="hl7TcpRoute">
-        <from uri="mina:tcp://localhost:8888?sync=true&amp;codec=#hl7codec"/>
+        <from uri="mina2:tcp://localhost:8888?sync=true&amp;codec=#hl7codec"/>
         <to uri="direct:hl7Direct"/>
     </route>
     <route id="hl7FileRoute">

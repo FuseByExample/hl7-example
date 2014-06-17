@@ -32,18 +32,18 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <camel.version>2.10.0.redhat-60024</camel.version>
-    <cxf.version>2.6.0.redhat-60024</cxf.version>
-    <spring.version>3.1.3.RELEASE</spring.version>
-    <slf4j.version>1.6.1</slf4j.version>
-    <hapi.version>1.2</hapi.version>
+    <camel.version>2.12.0.redhat-610379</camel.version>
+    <cxf.version>2.7.0.redhat-610379</cxf.version>
+    <spring.version>3.2.8.RELEASE</spring.version>
+    <slf4j.version>1.6.6</slf4j.version>
+    <hapi.version>2.1</hapi.version>
   </properties>
 
   <repositories>
     <repository>
       <id>fusesource.releases</id>
       <name>FuseSource Release Repository</name>
-      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
+      <url>https://repo.fusesource.com/nexus/content/groups/public</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -56,7 +56,7 @@
     <pluginRepository>
       <id>fusesource.releases</id>
       <name>FuseSource Release Repository</name>
-      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
+      <url>https://repo.fusesource.com/nexus/content/groups/public</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -140,7 +140,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.camel</groupId>
-        <artifactId>camel-mina</artifactId>
+        <artifactId>camel-mina2</artifactId>
         <version>${camel.version}</version>
       </dependency>
       <dependency>
@@ -150,12 +150,17 @@
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
+        <artifactId>slf4j-simple</artifactId>
         <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>ca.uhn.hapi</groupId>
         <artifactId>hapi-osgi-base</artifactId>
+        <version>${hapi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ca.uhn.hapi</groupId>
+        <artifactId>hapi-structures-v24</artifactId>
         <version>${hapi.version}</version>
       </dependency>
     </dependencies>

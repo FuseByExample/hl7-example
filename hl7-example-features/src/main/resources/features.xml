@@ -26,7 +26,7 @@
     <feature version="${camel.version}">camel-core</feature>
     <feature version="${camel.version}">camel-spring</feature>
     <feature version="${camel.version}">camel-hl7</feature>
-    <feature version="${camel.version}">camel-mina</feature>
+    <feature version="${camel.version}">camel-mina2</feature>
     <feature version="${camel.version}">camel-groovy</feature>
     <bundle>mvn:ca.uhn.hapi/hapi-osgi-base/${hapi.version}</bundle>
     <bundle>mvn:${project.groupId}/hl7-example-camel/${project.version}</bundle>

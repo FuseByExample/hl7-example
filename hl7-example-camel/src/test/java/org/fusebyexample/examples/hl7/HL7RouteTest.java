@@ -34,7 +34,7 @@ public class HL7RouteTest {
   @Autowired(required=true)
   private CamelContext camelCtx;
   
-  @Produce(uri="mina:tcp://localhost:8888?sync=true&disconnectOnNoReply=true&timeout=5000&codec=#hl7codec")
+  @Produce(uri="mina2:tcp://localhost:8888?sync=true&disconnectOnNoReply=true&timeout=5000&codec=#hl7codec")
   private ProducerTemplate hl7TcpProducer;
   
   @Produce(uri="file:///tmp/?fileName=camel-test.hl7")
@@ -48,9 +48,9 @@ public class HL7RouteTest {
   
   private String createValidHl7Message() {
     StringBuilder hl7Message = new StringBuilder();
-    hl7Message.append("MSH|^~\\&|FUSEDEMO|ORG|TEST|JBOSS|20061019172719||ADT^A01^ADT_A01|MSGID12349876|P|2.4").append("\n\r");
-    hl7Message.append("PID|||20301||Durden^Tyler^^^Mr.||19700312|M|||88 Punchward Dr.^^Los Angeles^CA^11221^USA|||||||").append("\n\r");
-    hl7Message.append("PV1||O|OP^^||||4652^Paulson^Robert|||OP|||||||||9|||||||||||||||||||||||||20061019172717|20061019172718").append("\n\r");
+    hl7Message.append("MSH|^~\\&|FUSEDEMO|ORG|TEST|JBOSS|20061019172719||ADT^A01^ADT_A01|MSGID12349876|P|2.4").append("\r");
+    hl7Message.append("PID|||20301||Durden^Tyler^^^Mr.||19700312|M|||88 Punchward Dr.^^Los Angeles^CA^11221^USA|||||||").append("\r");
+    hl7Message.append("PV1||O|OP^^||||4652^Paulson^Robert|||OP|||||||||9|||||||||||||||||||||||||20061019172717|20061019172718").append("\r");
     return hl7Message.toString();
   }
   
