@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+~ Copyright (C) Red Hat, Inc.
+~ http://www.redhat.com
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~    http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+  <bean id="hl7encoder" class="org.apache.camel.component.hl7.HL7MLLPNettyEncoderFactory">
+    <property name="charset" value="iso-8859-1"/>
+    <property name="convertLFtoCR" value="true"/>
+  </bean>
+
+  <bean id="hl7decoder" class="org.apache.camel.component.hl7.HL7MLLPNettyDecoderFactory">
+    <property name="charset" value="iso-8859-1"/>
+    <property name="convertLFtoCR" value="true"/>
+  </bean>
+  
+  <bean id="ackGenerator" class="org.apache.camel.component.hl7.HL7" factory-method="ack" scope="prototype"/>
+
+  <camelContext xmlns="http://camel.apache.org/schema/spring">
+    
+    <route id="hl7TcpRoute">
+      <from uri="netty4:tcp://localhost:8888?sync=true&amp;decoder=#hl7decoder&amp;encoder=#hl7encoder"/>
+      <to uri="direct:hl7Main"/>
+    </route>
+    
+    <route id="hl7FileRoute">
+      <from uri="file:///tmp/hl7-example/?delete=true&amp;moveFailed=.error&amp;antInclude=*.hl7"/>
+      <convertBodyTo type="java.lang.String"/>
+      <to uri="direct:hl7Main"/>
+    </route>
+    
+    <route id="hl7MainRoute">
+      <from uri="direct:hl7Main"/>
+      <onException>
+        <exception>ca.uhn.hl7v2.validation.ValidationException</exception>
+        <handled>
+          <constant>true</constant>
+        </handled>
+        <log message="Got an exception: ${exception.message}"/>
+        <transform>
+          <ref>ackGenerator</ref>
+        </transform>
+        <marshal>
+          <hl7 validate="true"/>
+        </marshal>
+        <log message="HL7 Response: ${body}"/>
+      </onException>
+      <log message="HL7 Request: ${body}"/>
+      <unmarshal>
+        <hl7 validate="true"/>
+      </unmarshal>
+      <enrich uri="direct:hl7NormalizeAddress"/>
+      <log message="Enriched HL7 Request: ${body}"/>
+      <to uri="mock:hl7MockBackend"/>
+      <transform>
+        <ref>ackGenerator</ref>
+      </transform>
+      <marshal>
+        <hl7 validate="true"/>
+      </marshal>
+      <log message="HL7 Response: ${body}"/>
+    </route>
+    
+    <route id="hl7NormalizeAddressRoute">
+      <from uri="direct:hl7NormalizeAddress"/>
+      <transform>
+        <groovy>
+          <![CDATA[
+          adt = request?.body;
+          adt.PID.patientAddress.each {
+            it.streetAddress.value = it.streetAddress.value.replaceAll(/(?i)ST\.?/, 'STREET')
+          };
+          request.body = adt;
+          ]]>
+        </groovy>
+      </transform>
+    </route>
+    
+  </camelContext>
+
+</beans>

@@ -22,7 +22,7 @@
           
   <repository>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</repository>
   
-  <feature name='hl7-example-all' version='${project.version}'>
+  <feature name='hl7-example' version='${project.version}'>
     <feature version="${camel.version}">camel-core</feature>
     <feature version="${camel.version}">camel-spring</feature>
     <feature version="${camel.version}">camel-hl7</feature>
