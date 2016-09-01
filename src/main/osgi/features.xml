@@ -19,17 +19,17 @@
           xmlns="http://karaf.apache.org/xmlns/features/v1.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0">
-          
+
   <repository>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</repository>
-  
+
   <feature name='hl7-example' version='${project.version}'>
     <feature version="${camel.version}">camel-core</feature>
     <feature version="${camel.version}">camel-spring</feature>
     <feature version="${camel.version}">camel-hl7</feature>
-    <feature version="${camel.version}">camel-mina2</feature>
+    <feature version="${camel.version}">camel-netty4</feature>
     <feature version="${camel.version}">camel-groovy</feature>
     <bundle>mvn:ca.uhn.hapi/hapi-osgi-base/${hapi.version}</bundle>
-    <bundle>mvn:${project.groupId}/hl7-example-camel/${project.version}</bundle>
+    <bundle>mvn:${project.groupId}/${project.artifactId}/${project.version}</bundle>
   </feature>
-  
+
 </features>

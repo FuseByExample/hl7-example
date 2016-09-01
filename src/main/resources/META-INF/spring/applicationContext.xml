@@ -30,22 +30,22 @@
     <property name="charset" value="iso-8859-1"/>
     <property name="convertLFtoCR" value="true"/>
   </bean>
-  
+
   <bean id="ackGenerator" class="org.apache.camel.component.hl7.HL7" factory-method="ack" scope="prototype"/>
 
   <camelContext xmlns="http://camel.apache.org/schema/spring">
-    
+
     <route id="hl7TcpRoute">
       <from uri="netty4:tcp://localhost:8888?sync=true&amp;decoder=#hl7decoder&amp;encoder=#hl7encoder"/>
       <to uri="direct:hl7Main"/>
     </route>
-    
+
     <route id="hl7FileRoute">
-      <from uri="file:///tmp/hl7-example/?delete=true&amp;moveFailed=.error&amp;antInclude=*.hl7"/>
+      <from uri="file:///tmp/hl7-example/?delete=true&amp;readLock=fileLock&amp;moveFailed=.error&amp;antInclude=*.hl7"/>
       <convertBodyTo type="java.lang.String"/>
       <to uri="direct:hl7Main"/>
     </route>
-    
+
     <route id="hl7MainRoute">
       <from uri="direct:hl7Main"/>
       <onException>
@@ -77,7 +77,7 @@
       </marshal>
       <log message="HL7 Response: ${body}"/>
     </route>
-    
+
     <route id="hl7NormalizeAddressRoute">
       <from uri="direct:hl7NormalizeAddress"/>
       <transform>
@@ -92,7 +92,7 @@
         </groovy>
       </transform>
     </route>
-    
+
   </camelContext>
 
 </beans>
