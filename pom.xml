@@ -36,35 +36,37 @@
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
 
-    <camel.version>2.15.1.redhat-621084</camel.version>
+    <camel.version>2.17.0.redhat-630187</camel.version>
     <slf4j.version>1.6.6</slf4j.version>
     <hapi.version>2.2</hapi.version>
   </properties>
 
   <repositories>
     <repository>
-      <id>fusesource.releases</id>
-      <name>FuseSource Release Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/fs-releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
+      <id>redhat.ga</id>
+      <name>Red Hat General Availability Repository</name>
+      <url>https://maven.repository.redhat.com/ga</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
     </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
-      <id>fusesource.releases</id>
-      <name>FuseSource Release Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/fs-releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
+      <id>redhat.ga</id>
+      <name>Red Hat General Availability Repository</name>
+      <url>https://maven.repository.redhat.com/ga</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
     </pluginRepository>
   </pluginRepositories>
 
@@ -81,7 +83,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-test-spring</artifactId>
+      <artifactId>camel-test-spring3</artifactId>
       <version>${camel.version}</version>
     </dependency>
     <dependency>

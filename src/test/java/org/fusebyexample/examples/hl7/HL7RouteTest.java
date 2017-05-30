@@ -23,7 +23,6 @@ import ca.uhn.hl7v2.model.v22.message.ACK;
 import ca.uhn.hl7v2.parser.Parser;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
-import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringJUnit4ClassRunner;
@@ -38,14 +37,11 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration({"classpath*:/META-INF/spring/*.xml"})
 public class HL7RouteTest {
 
+  private static final String HL7_TCP_PRODUCER_URI = "netty4://tcp://localhost:8888?sync=true&decoder=#hl7decoder&encoder=#hl7encoder";
+  private static final String HL7_FILE_PRODUCER_URI = "file:///tmp/hl7-example/?fileName=camel-test.hl7";
+
   @Autowired(required = true)
   private CamelContext camelCtx;
-
-  @Produce(uri = "netty4:tcp://localhost:8888?sync=true&decoder=#hl7decoder&encoder=#hl7encoder")
-  private ProducerTemplate hl7TcpProducer;
-
-  @Produce(uri = "file:///tmp/hl7-example/?fileName=camel-test.hl7")
-  private ProducerTemplate hl7FileProducer;
 
   @EndpointInject(uri = "mock:hl7MockBackend")
   private MockEndpoint hl7MockBackend;
@@ -109,7 +105,8 @@ public class HL7RouteTest {
 
   @Test
   public void testHl7TcpRouteValidMessage() throws Exception {
-    String ack = hl7TcpProducer.requestBody((Object) validHl7Message(), String.class);
+    ProducerTemplate producer = camelCtx.createProducerTemplate();
+    String ack = producer.requestBody(HL7_TCP_PRODUCER_URI, (Object) validHl7Message(), String.class);
     Message hapiAck = hapiParser().parse(ack);
     assertTrue("The result was not a HAPI ACK.", hapiAck instanceof ACK);
     assertTrue("The result was not a successful HAPI ACK.", ((ACK) hapiAck).getMSA().getAcknowledgementCode().getValue().equals("AA"));
@@ -121,7 +118,8 @@ public class HL7RouteTest {
 
   @Test
   public void testHl7TcpRouteInvalidMessage() throws Exception {
-    String ack = hl7TcpProducer.requestBody((Object) invalidHl7Message(), String.class);
+    ProducerTemplate producer = camelCtx.createProducerTemplate();
+    String ack = producer.requestBody(HL7_TCP_PRODUCER_URI, (Object) invalidHl7Message(), String.class);
     Message hapiAck = hapiParser().parse(ack);
     assertTrue("The result was not a HAPI ACK.", hapiAck instanceof ACK);
     assertTrue("The result was not an error HAPI ACK.", ((ACK) hapiAck).getMSA().getAcknowledgementCode().getValue().equals("AE"));
@@ -133,7 +131,8 @@ public class HL7RouteTest {
 
   @Test
   public void testHl7FileRouteValidMessage() throws Exception {
-    hl7FileProducer.sendBody(validHl7Message());
+    ProducerTemplate producer = camelCtx.createProducerTemplate();
+    producer.sendBody(HL7_FILE_PRODUCER_URI, validHl7Message());
 
     hl7MockBackend.expectedMessageCount(1);
     // TODO Add more validation criteria
@@ -142,7 +141,8 @@ public class HL7RouteTest {
 
   @Test
   public void testHl7FileRouteInvalidMessage() throws Exception {
-    hl7FileProducer.sendBody(invalidHl7Message());
+    ProducerTemplate producer = camelCtx.createProducerTemplate();
+    producer.sendBody(HL7_FILE_PRODUCER_URI, invalidHl7Message());
 
     hl7MockBackend.expectedMessageCount(0);
     // TODO Add more validation criteria

@@ -66,7 +66,9 @@
       <unmarshal>
         <hl7 validate="true"/>
       </unmarshal>
-      <enrich uri="direct:hl7NormalizeAddress"/>
+      <enrich>
+        <constant>direct:hl7NormalizeAddress</constant>
+      </enrich>
       <log message="Enriched HL7 Request: ${body}"/>
       <to uri="mock:hl7MockBackend"/>
       <transform>
